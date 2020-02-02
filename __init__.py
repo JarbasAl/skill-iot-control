@@ -201,8 +201,7 @@ class SkillIoTControl(MycroftSkill):
             self.schedule_event(self._speak_or_acknowledge,
                                 self.response_timeout,
                                 data={IOT_REQUEST_ID: id},
-                                name="SpeakOrAcknowledge",
-                                context=message.context or {})
+                                name="SpeakOrAcknowledge")
 
     def _speak_or_acknowledge(self, message: Message):
         id = message.data.get(IOT_REQUEST_ID)
@@ -283,13 +282,11 @@ class SkillIoTControl(MycroftSkill):
         self.schedule_event(self._delete_request,
                             10 * self.response_timeout,
                             data={IOT_REQUEST_ID: id},
-                            name="DeleteRequest",
-                            context=message.context or {})
+                            name="DeleteRequest")
         self.schedule_event(self._run,
                             self.response_timeout,
                             data={IOT_REQUEST_ID: id},
-                            name="RunIotRequest",
-                            context=message.context or {})
+                            name="RunIotRequest")
 
     def _trigger_iot_request(self, data: dict,
                              action: Action,
