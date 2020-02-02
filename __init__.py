@@ -195,13 +195,14 @@ class SkillIoTControl(MycroftSkill):
         else:
             winners = self._pick_winners(candidates)
             for winner in winners:
-                self.bus.emit(Message(
+                self.bus.emit(message.forward(
                     _BusKeys.RUN + winner.data["skill_id"], winner.data))
 
             self.schedule_event(self._speak_or_acknowledge,
                                 self.response_timeout,
                                 data={IOT_REQUEST_ID: id},
-                                name="SpeakOrAcknowledge")
+                                name="SpeakOrAcknowledge",
+                                context=message.context or {})
 
     def _speak_or_acknowledge(self, message: Message):
         id = message.data.get(IOT_REQUEST_ID)
@@ -282,11 +283,13 @@ class SkillIoTControl(MycroftSkill):
         self.schedule_event(self._delete_request,
                             10 * self.response_timeout,
                             data={IOT_REQUEST_ID: id},
-                            name="DeleteRequest")
+                            name="DeleteRequest",
+                            context=message.context or {})
         self.schedule_event(self._run,
                             self.response_timeout,
                             data={IOT_REQUEST_ID: id},
-                            name="RunIotRequest")
+                            name="RunIotRequest",
+                            context=message.context or {})
 
     def _trigger_iot_request(self, data: dict,
                              action: Action,
